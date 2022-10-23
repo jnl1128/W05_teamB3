@@ -48,13 +48,20 @@ Node * minValueNode(Node* root){
 Node* deleteNode(Node* cur, int data){
     if(cur== NULL)
         return cur;
+
     if (data < cur->key)
     {
         cur->left = deleteNode(cur->left, data);
     }
     else if(data > cur->key){
         cur->right = deleteNode(cur->right, data);
-    }else{
+    }
+    else
+    {
+        // if key is same as cur's data;
+        // then THIS NODE is the node to be deleted
+
+        // node with only one child or no child
         if (cur->left == NULL){
             Node *tmp = cur->right;
             free(cur);
@@ -64,9 +71,15 @@ Node* deleteNode(Node* cur, int data){
             free(cur);
             return tmp;
         }
-
+        // node with two children
+        // get the inorder successor (smallest in the right subtree)
         Node *tmp = minValueNode(cur->right);
+
+        // copy value of the inorder
+        // successor's content(tmp->key) to this node
         cur->key = tmp->key;
+
+        // delete the inorder successor
         cur->right = deleteNode(cur->right, tmp->key);
     }
     return cur;
@@ -104,3 +117,14 @@ int main(){
     deleteNode(head, 11);
     showNode(head);
 }
+
+// three possibilities
+// 1. node to be deleted is the LEAF (no child)
+//  -> simply remove from the tree
+// 2. node to be deleted has only one child
+//  -> copy the child to the node and delete the child
+// 3. node to be deleted has two children
+//  -> find inorder succeesor of the node.(find the minimum value node from the right subtree)
+//  -> copy contents of the inorder successor(중위 순회시 다음에 갈 노드) to the node
+//     and delete the inorder successor.
+//  -> node that inorder predecessor can also be used
